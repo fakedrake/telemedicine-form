@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/telemedicine-form/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/telemedicine-form/static/js/main.c2b49b62.chunk.js",
-    "main.js.map": "/telemedicine-form/static/js/main.c2b49b62.chunk.js.map",
+    "main.js": "/telemedicine-form/static/js/main.00d2ce03.chunk.js",
+    "main.js.map": "/telemedicine-form/static/js/main.00d2ce03.chunk.js.map",
     "runtime-main.js": "/telemedicine-form/static/js/runtime-main.4d119ce1.js",
     "runtime-main.js.map": "/telemedicine-form/static/js/runtime-main.4d119ce1.js.map",
     "static/js/2.e8c1025f.chunk.js": "/telemedicine-form/static/js/2.e8c1025f.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.4d119ce1.js",
     "static/js/2.e8c1025f.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.c2b49b62.chunk.js"
+    "static/js/main.00d2ce03.chunk.js"
   ]
 }
