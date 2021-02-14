@@ -2,8 +2,11 @@
 import React from 'react';
 import { render } from 'react-dom';
 import { Form, Field } from 'react-final-form';
-import { Container,Row,Col,Card } from 'react-bootstrap';
+import { Button,Container,Row,Col,Card } from 'react-bootstrap';
 import DatePicker from 'react-date-picker';
+
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -123,7 +126,7 @@ const sections = [{
   message: (score) => {
     if (score <= 6) {return "Follow up if deterioration";}
     if (score <= 9) {return "Follow up next day";}
-    if (score > 9) {return "Observe clinical signs. (" + score + ")";}
+    if (score > 9) {return "Observe clinical signs.";}
     return (<i>Select all the options.</i>);
   }
 },
@@ -191,16 +194,56 @@ const calcScores = (sections,values) => {
     });
     return ret;
 };
+
+function fmtDate(date) {
+    var d = date.getDate();
+    var m = date.getMonth() + 1; //Month from 0 to 11
+    var y = date.getFullYear();
+    return '' + y + '-' + (m<=9 ? '0' + m : m) + '-' + (d <= 9 ? '0' + d : d);
+}
+
+const savePdf = values => {
+    const doc = new jsPDF();
+    doc.autoTable({ body : [
+        ["Name", values["firstName"] + " " + values["lastName"]],
+        ["Birth", fmtDate(values["birthDate"])],
+        ["Date generated", fmtDate(new Date())],
+        ]})
+    doc.autoTable({ theme: 'grid', html: '#results_table' })
+    doc.save(
+        values['firstName'] + '-' + values['lastName'] + '-' + fmtDate(new Date()) + '.pdf')
+}
+
+const PdfButton = props => {
+    var enable = !Object.values(props.scores).some(isNaN);
+    const values = props.values;
+    if (enable) {
+        return (<Button variant="primary" disabled={false} onClick={() => savePdf(values)} >
+                   Save as pdf
+               </Button>)
+    } else {
+        return (
+        <div>
+            <Button variant="primary" disabled={true} >
+                Save as pdf
+            </Button>
+            <i>Complete the form to enable</i>
+        </div>);
+    }
+}
+
+
 const mkTable = (values) => {
     var  scores = calcScores(sections,values);
     return (
         <Card>
             <Card.Header><b>Results</b></Card.Header>
             <Card.Body>
-                <table class="table">
+                <table class="table" id="results_table">
                     <tr><th>Section</th><th>Action</th><th>Score</th></tr>
                     {sections.map((sec) => mkTableRow(sec,values,scores))}
                 </table>
+                <PdfButton values={values} scores={scores} />
             </Card.Body>
         </Card>);
   };
@@ -241,6 +284,7 @@ const mkForm = ({ handleSubmit, form, submitting, pristine, values }) => (
 const App = () => (
   <Container>
     <h1>Telemedicine</h1>
+    <i>Today: {fmtDate(new Date())}</i>
     <Form
       onSubmit={onSubmit}
       initialValues={{}}
