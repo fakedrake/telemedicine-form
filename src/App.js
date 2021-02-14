@@ -3,6 +3,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Form, Field } from 'react-final-form';
 import { Container,Row,Col,Card } from 'react-bootstrap';
+import DatePicker from 'react-date-picker';
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -20,6 +21,13 @@ const mkCard = (dat) => (
     </Card.Body>
   </Card>);
 
+const DatePickerWrapper = props =>
+      (<DatePicker
+           value={props.input.value}
+           dropdownMonde="select"
+           selected={props.input.value}
+           onChange={val => props.input.onChange(val)}
+           />)
 
 const mkInpt = (props) =>{
     if (props.opts !== undefined) {
@@ -57,6 +65,24 @@ const age_opts = [
     {label:"6 - 12 years", value:"school"},
     {label:"12 - 18 years", value:"teen"}]
 
+const development = (values) => {
+    const d1 = values["birthDate"], d2 = new Date()
+    if (typeof(d1) == "undefined") return NaN;
+    var months;
+    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+    months -= d1.getMonth();
+    months += d2.getMonth();
+    months = months <= 0 ? 0 : months;
+    const y = months / 12;
+
+    if (months <= 12) {return "infant";}
+    if (y <= 3) return "toddler";
+    if (y <= 6) return "preschool";
+    if (y <= 12) return "school";
+    if (y <= 18) return "teen";
+    return null;
+}
+
 const physScore = (sec,values) => {
     const rng = (low,high) => {
         var resp = parseInt(values['resp_rate']);
@@ -67,20 +93,20 @@ const physScore = (sec,values) => {
         } else if (resp >= high) {
             return 3;
         }
-        return null;
+        return NaN;
     };
     const ageScore = () => {
-        switch (values['age']) {
+        switch (development(values)) {
         case "infant": return rng(60,70);
         case "toddler": return rng(34,40);
-        case "prescool": return rng(30,36);
+        case "preschool": return rng(30,36);
         case "school": return rng(26,31);
         case "teen": return rng(23,28);
         default:
-            return null;
+            return NaN;
         };
     }
-    return JSON.stringify({score: ageScore() + parseInt(values['oxymeter'])})
+    return ageScore() + parseInt(values['oxymeter']);
 }
 const sections = [{
   title: "History of personal illness",
@@ -95,7 +121,6 @@ const sections = [{
   ],
   calc_score: (sec,values) => sum(to_values(values, sec.items)),
   message: (score) => {
-    var xs = JSON.stringify(score);
     if (score <= 6) {return "Follow up if deterioration";}
     if (score <= 9) {return "Follow up next day";}
     if (score > 9) {return "Observe clinical signs. (" + score + ")";}
@@ -114,7 +139,6 @@ const sections = [{
   ],
   calc_score: (sec,values) => sum(to_values(values, sec.items)),
   message: (score,scores) => {
-    var xs = JSON.stringify(score);
     if (score == 5) {return "Follow up in case of deterioration.";}
     if (score <= 7) {
         return "Arrange an office visit the same day if Social Circumstances >4 Otherwise Follow up in 6-8h (" +scores['clinical'] + ")"; // XXX
@@ -127,13 +151,15 @@ const sections = [{
   title: "Pysical signs",
   id: "physical",
   items: [
-    {id: "age", label: "Age", opts: age_opts},
     {id: "oxymeter", label: "Pulse oxymeter", opts:["> 97%", "94% - 97%", "90% - 94%"]},
     {id: "resp_rate", label: "Respiratory rate while afebrile and resting", field:<Field name="resp_rate" component="input" type="number"/>}
   ],
   calc_score: physScore,
   message: (score,scores) => {
-      return "Physical: " + score;
+      if (score <= 2) {return "Follow up the next day";}
+      if (score == 3) {return "Arrange visit the same day";}
+      if (score >= 4) {return "Emergency room referral";}
+      return (<i>Select all the options and date of birth.</i>);
   },
 },
 {
@@ -156,7 +182,7 @@ const mkTableRow = (sec,values,scores) => {
         <tr>
             <td>{sec.title}</td>
             <td>{sec.message(scores[sec.id],scores)}</td>
-            <td>{sum(to_values(values, sec.items))}</td>
+            <td>{scores[sec.id]}</td>
         </tr>);}
 const calcScores = (sections,values) => {
     var ret = {};
@@ -179,10 +205,35 @@ const mkTable = (values) => {
         </Card>);
   };
 
+
+const patient_details = [
+    {label:"First name", field: <Field name="firstName" component="input" type="text" placeholder="First Name"/>},
+    {label:"Last name", field: <Field name="lastName" component="input" type="text" placeholder="Last Name"/>},
+    {label:"Date of birth", field: <Field name="birthDate" component={DatePickerWrapper} />}
+]
+const InfoTable = () => <div>
+{ patient_details.map((d) =>
+    <Row>
+        <label class="col">{d.label}</label>
+        <Col>
+            {d.field}
+        </Col>
+    </Row>
+)}
+</div>
+
 const mkForm = ({ handleSubmit, form, submitting, pristine, values }) => (
     <div>
-      { sections.map(mkCard) }
-      { mkTable(values) }
+        <Card>
+            <Card.Header><b>Patient information</b></Card.Header>
+            <Card.Body>
+                <InfoTable/>
+            </Card.Body>
+        </Card>
+        <Card>
+            { sections.map(mkCard) }
+            { mkTable(values) }
+        </Card>
     </div>);
 //       <pre>{JSON.stringify(values, 0, 2)}</pre>
 
