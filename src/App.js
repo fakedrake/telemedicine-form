@@ -136,7 +136,7 @@ const sections = [{
   items: [
     {id: "coughs_per_hour", label: "Coughs per hour", opts: ["< 5","5 - 8","> 8"]},
     {id: "activity", label: "Level of activity", opts: ["Full active","Moderate restricted","Mostly sleeping"]},
-    {id: "sleep", label: "Sleeping interrutions", opts: ["As usual","Waking up < 3 times/night","Waking up > 3 times/night"]},
+    {id: "sleep", label: "Sleeping", opts: ["As usual","Waking up < 3 times/night","Waking up > 3 times/night"]},
     {id: "cough_dyspnea", label: "Progression of cough or dyspnea", opts: ["No progression or improvement","Slow progression","Rapid progression"]},
     {id: "urine", label: "Urine output", opts: ["As usual","Moderate decreased (more than half the usual output)","Severe decreased (less than half the usual output)"]},
     {id: "cardiac_respiratory", label: "History of cardiac/respiratory problems", opts: ["No", "Under control", "Not under control"]}
@@ -248,9 +248,9 @@ const savePdf = values => {
     doc.save(
         values['firstName'] + '-' + values['lastName'] + '-' + fmtDate(new Date()) + '.pdf')
 }
-
+const isInValid = s => (isNaN(s.score) && !s.ambulance && !s.emergency);
 const PdfButton = props => {
-    var enable = !Object.values(props.scores).some(isNaN);
+    var enable = !Object.values(props.scores).some(isInValid);
     const values = props.values;
     if (enable) {
         return (<Button variant="primary" disabled={false} onClick={() => savePdf(values)} >
@@ -323,7 +323,7 @@ const App = () => (
     <Card>
         <Card.Header><b>Usage</b></Card.Header>
         <Card.Body>
-            This form stores <b>no information anywhere</b> so you patients informatio is
+            This form stores <b>no information anywhere</b> so you patients' informatio is
             safe.
             Filling in the form will
             update the table at the bottom of the page automatically. Once the form
