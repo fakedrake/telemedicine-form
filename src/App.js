@@ -285,6 +285,20 @@ const App = () => (
   <Container>
     <h1>Telemedicine</h1>
     <i>Today: {fmtDate(new Date())}</i>
+    <Card>
+        <Card.Header><b>Usage</b></Card.Header>
+        <Card.Body>
+            This form stores <b>no information anywhere</b> so you patients informatio is
+            safe.
+            Filling in the form will
+            update the table at the bottom of the page automatically. Once the form
+            is filled in it's entirety, you may download the table in pdf form by clicking
+            the button at the end of the page. If the button does not seem to work it may
+            be because your browser is blocking the download. If this happens check the
+            URL bar of your browser for such indications and disable the setting by
+            clicking on the icon tha appears.
+        </Card.Body>
+    </Card>
     <Form
       onSubmit={onSubmit}
       initialValues={{}}
