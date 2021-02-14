@@ -25,7 +25,12 @@ const mkInpt = (props) =>{
     if (props.opts !== undefined) {
         return (<Field name={props.id} component="select" class="form-control">
                     <option selected>Please Select</option>
-                    {props.opts.map((opt,i) => (<option value={i+1}>{opt}</option>))}
+                    {props.opts.map((opt,i) =>
+                        {if (typeof(opt) == "string") {
+                            return (<option value={i+1}>{opt}</option>);
+                         } else {
+                             return (<option value={opt.value}>{opt.label}</option>)
+                         }})}
                 </Field>);
     } else {
         return props.field;
@@ -44,6 +49,39 @@ const mkDropDown = (props) => (
 const mkElem = mkDropDown;
 const sum = (vals) => (vals.reduce((x,y) => (x + y), 0));
 const to_values = (m,ids) => ids.map((i) => parseInt(m[i.id]));
+
+const age_opts = [
+    {label: "2 - 12 months", value: "infant"},
+    {label:"1 - 3 years", value:"toddler"},
+    {label:"3 - 6 years", value:"prescool"},
+    {label:"6 - 12 years", value:"school"},
+    {label:"12 - 18 years", value:"teen"}]
+
+const physScore = (sec,values) => {
+    const rng = (low,high) => {
+        var resp = parseInt(values['resp_rate']);
+        if (resp < low) {
+            return 1;
+        } else if (resp < high) {
+            return 2;
+        } else if (resp >= high) {
+            return 3;
+        }
+        return null;
+    };
+    const ageScore = () => {
+        switch (values['age']) {
+        case "infant": return rng(60,70);
+        case "toddler": return rng(34,40);
+        case "prescool": return rng(30,36);
+        case "school": return rng(26,31);
+        case "teen": return rng(23,28);
+        default:
+            return null;
+        };
+    }
+    return JSON.stringify({score: ageScore() + parseInt(values['oxymeter'])})
+}
 const sections = [{
   title: "History of personal illness",
   id: "history",
@@ -61,7 +99,7 @@ const sections = [{
     if (score <= 6) {return "Follow up if deterioration";}
     if (score <= 9) {return "Follow up next day";}
     if (score > 9) {return "Observe clinical signs. (" + score + ")";}
-    return (<it>Select all the options.</it>);
+    return (<i>Select all the options.</i>);
   }
 },
 {
@@ -82,40 +120,34 @@ const sections = [{
         return "Arrange an office visit the same day if Social Circumstances >4 Otherwise Follow up in 6-8h (" +scores['clinical'] + ")"; // XXX
     }
     if (score == 8) {return "Emerengency Room Referral";}
-    return (<it>Select all the options.</it>);
+    return (<i>Select all the options.</i>);
   }
 },
 {
   title: "Pysical signs",
   id: "physical",
   items: [
-    {id: "age", label: "Age", opts: ["2 - 12 months", "1 - 3 years", "3 - 6 years", "6 - 12 years", "12 - 18 years"]},
+    {id: "age", label: "Age", opts: age_opts},
     {id: "oxymeter", label: "Pulse oxymeter", opts:["> 97%", "94% - 97%", "90% - 94%"]},
     {id: "resp_rate", label: "Respiratory rate while afebrile and resting", field:<Field name="resp_rate" component="input" type="number"/>}
   ],
-  calc_score: (sec,values) => sum(to_values(values, sec.items)),
+  calc_score: physScore,
   message: (score,scores) => {
-    var xs = JSON.stringify(score);
-    if (score == 5) {return "Follow up in case of deterioration.";}
-    if (score <= 7) {
-        if (scores["social"] > 4) {return "Arrange an office visit the same day" }
-        if (scores["social"] <= 4) {return "Followup in 6 - 8h" }
-        return <it>Fill in the social circumstances</it>;
-    }
-    if (score == 8) {return "Emerengency Room Referral";}
-    return (<it>Select all the options.</it>);
+      return "Physical: " + score;
   },
+},
+{
   title: "Social circumstances",
   id: "social",
   items: [
       {id: "distance", label: "Distance from medical center", opts:["< 30 min", "30 - 60 min", "> 60 min"]},
-      {id: "transport", label: "Means of transportation", opts: ["Private vehicle", "Pubplic transport"]}
+      {id: "transport", label: "Means of transportation", opts: ["Private vehicle", {label: "Pubplic transport",value:"3"}]}
   ],
   calc_score: (sec,values) => sum(to_values(values, sec.items)),
   message: (score,scores) => {
       if (score <= 3) { return "No action" }
       if (score >= 3) {return "See observation of clinical signs"}
-      return (<it>Select all the options.</it>);
+      return (<i>Select all the options.</i>);
   }
 }];
 
@@ -123,7 +155,7 @@ const mkTableRow = (sec,values,scores) => {
     return (
         <tr>
             <td>{sec.title}</td>
-            <td>{sec.message(sum(to_values(values, sec.items)),scores)}</td>
+            <td>{sec.message(scores[sec.id],scores)}</td>
             <td>{sum(to_values(values, sec.items))}</td>
         </tr>);}
 const calcScores = (sections,values) => {
