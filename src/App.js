@@ -318,7 +318,7 @@ const mkForm = ({ handleSubmit, form, submitting, pristine, values }) => (
 
 const App = () => (
   <Container>
-    <h1>Telemedicine</h1>
+    <h1>Asseement of cough and dyspnea in children</h1>
     <i>Today: {fmtDate(new Date())}</i>
     <Card>
         <Card.Header><b>Usage</b></Card.Header>
