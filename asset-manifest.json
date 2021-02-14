@@ -1,22 +1,25 @@
 {
   "files": {
     "main.css": "/telemedicine-form/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/telemedicine-form/static/js/main.a7674392.chunk.js",
-    "main.js.map": "/telemedicine-form/static/js/main.a7674392.chunk.js.map",
-    "runtime-main.js": "/telemedicine-form/static/js/runtime-main.1a88ffeb.js",
-    "runtime-main.js.map": "/telemedicine-form/static/js/runtime-main.1a88ffeb.js.map",
-    "static/js/2.4c44b932.chunk.js": "/telemedicine-form/static/js/2.4c44b932.chunk.js",
-    "static/js/2.4c44b932.chunk.js.map": "/telemedicine-form/static/js/2.4c44b932.chunk.js.map",
-    "static/js/3.25a8f9aa.chunk.js": "/telemedicine-form/static/js/3.25a8f9aa.chunk.js",
-    "static/js/3.25a8f9aa.chunk.js.map": "/telemedicine-form/static/js/3.25a8f9aa.chunk.js.map",
+    "main.js": "/telemedicine-form/static/js/main.70091fbf.chunk.js",
+    "main.js.map": "/telemedicine-form/static/js/main.70091fbf.chunk.js.map",
+    "runtime-main.js": "/telemedicine-form/static/js/runtime-main.60c5f550.js",
+    "runtime-main.js.map": "/telemedicine-form/static/js/runtime-main.60c5f550.js.map",
+    "static/css/2.9c6b934b.chunk.css": "/telemedicine-form/static/css/2.9c6b934b.chunk.css",
+    "static/js/2.48b3c60a.chunk.js": "/telemedicine-form/static/js/2.48b3c60a.chunk.js",
+    "static/js/2.48b3c60a.chunk.js.map": "/telemedicine-form/static/js/2.48b3c60a.chunk.js.map",
+    "static/js/3.839973b8.chunk.js": "/telemedicine-form/static/js/3.839973b8.chunk.js",
+    "static/js/3.839973b8.chunk.js.map": "/telemedicine-form/static/js/3.839973b8.chunk.js.map",
     "index.html": "/telemedicine-form/index.html",
+    "static/css/2.9c6b934b.chunk.css.map": "/telemedicine-form/static/css/2.9c6b934b.chunk.css.map",
     "static/css/main.6dea0f05.chunk.css.map": "/telemedicine-form/static/css/main.6dea0f05.chunk.css.map",
-    "static/js/2.4c44b932.chunk.js.LICENSE.txt": "/telemedicine-form/static/js/2.4c44b932.chunk.js.LICENSE.txt"
+    "static/js/2.48b3c60a.chunk.js.LICENSE.txt": "/telemedicine-form/static/js/2.48b3c60a.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.1a88ffeb.js",
-    "static/js/2.4c44b932.chunk.js",
+    "static/js/runtime-main.60c5f550.js",
+    "static/css/2.9c6b934b.chunk.css",
+    "static/js/2.48b3c60a.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.a7674392.chunk.js"
+    "static/js/main.70091fbf.chunk.js"
   ]
 }
