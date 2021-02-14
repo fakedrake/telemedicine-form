@@ -112,7 +112,7 @@ const physScore = (sec,values) => {
     return ageScore() + parseInt(values['oxymeter']);
 }
 const sections = [{
-  title: "History of personal illness",
+  title: "History of present illness",
   id: "history",
   items: [
     {id: "coughs_per_hour", label: "Coughs per hour", opts: ["< 5","5 - 8","> 8"]},
