@@ -170,7 +170,7 @@ const sections = [{
     if (score <= 7) {
         return "Arrange an office visit the same day if Social Circumstances >4 Otherwise Follow up in 6-8h (" +scores['clinical'] + ")"; // XXX
     }
-    if (score >= 8) {return red_text("Emerengency Room Referral");}
+    if (score >= 8) {return red_text("Emergency Room Referral");}
     return (<i>Select all the options.</i>);
   }
 },
@@ -318,12 +318,12 @@ const mkForm = ({ handleSubmit, form, submitting, pristine, values }) => (
 
 const App = () => (
   <Container>
-    <h1>Asseement of cough and dyspnea in children</h1>
+    <h1>Assessment of cough and dyspnea in children</h1>
     <i>Today: {fmtDate(new Date())}</i>
     <Card>
         <Card.Header><b>Usage</b></Card.Header>
         <Card.Body>
-            This form stores <b>no information anywhere</b> so you patients' informatio is
+            This form stores <b>no information anywhere</b> so you patients' information is
             safe.
             Filling in the form will
             update the table at the bottom of the page automatically. Once the form
