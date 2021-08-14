@@ -112,13 +112,14 @@ const physScore = (sec,values) => {
         }
         return NaN;
     };
+    // Res rate score,
     const ageScore = () => {
         switch (development(values)) {
         case "infant": return rng(60,70);
         case "toddler": return rng(34,40);
         case "preschool": return rng(30,36);
         case "school": return rng(26,31);
-        case "teen": return rng(23,28);
+        case "teen": return rng(16,22);
         default:
             return NaN;
         };
@@ -130,11 +131,22 @@ const physScore = (sec,values) => {
     if (isNaN(score)) return zeroScore
     return {...zeroScore,score:score}
 }
+
+const priorities = {
+    none: 0,
+    blue: 1,
+    yellow: 2,
+    brown: 3,
+    red: 4,
+    top: 5
+}
+
 const sections = [{
   title: "History of present illness",
   id: "history",
   items: [
     {id: "coughs_per_hour", label: "Coughs per hour", opts: ["< 5","5 - 8","> 8"]},
+    {id: "wheezing", label: "Wheezing", opts: ["No","Periodically","Yes"]},
     {id: "activity", label: "Level of activity", opts: ["Full active","Moderate restricted","Mostly sleeping"]},
     {id: "sleep", label: "Sleeping", opts: ["As usual","Waking up < 3 times/night","Waking up > 3 times/night"]},
     {id: "cough_dyspnea", label: "Progression of cough or dyspnea", opts: ["No progression or improvement","Slow progression","Rapid progression"]},
@@ -143,10 +155,10 @@ const sections = [{
   ],
   calc_score: (sec,values) => sum_scores(to_scores(values, sec.items)),
   message: (score) => {
-    if (score <= 6) {return "Follow up if deterioration";}
-    if (score <= 9) {return "Follow up next day";}
-    if (score > 9) {return "Observe clinical signs.";}
-    return (<i>Select all the options.</i>);
+    if (score <= 7) {return {priority: priorities.blue, text: "Follow up if deterioration"};}
+    if (score <= 10) {return {priority: priorities.yellow, text: "Follow up next day"};}
+    if (score > 10) {return {priority: priorities.brown, text: "Fill in section '".concat(sections[1].title, "'.")  };}
+    return {priority: priorities.none, text: (<i>Select all the options.</i>)};
   }
 },
 {
@@ -162,34 +174,36 @@ const sections = [{
     {id: "resp_effort", label: "Respiratory effort", opts: ["No accessory muscles", "1 accessory muscle", "\u2265 2 accessory muscles"]},
     {id: "lay_down", label: "Ability to lay down", opts: ["Comfortable when lying down", "Unomfortable when lying down", "Mostly seating"]},
     {id: "speak", label: "Ability to speak", opts: ["In full sentences / babbles", "Only phrases / short cries", "Only words / grunting"]},
-    {id: "feed", label: "Ability to feed", opts: ["As usual decreased", "Decreased", "Severely reduced"]}
+    {id: "feed", label: "Ability to feed", opts: ["As usual decreased", "Decreased", "Severely reduced"]},
+    {id:"breathing_pattern", label:"Breathing pattern", opts:[
+        {label:"Normal",value:"0"},
+        {label:"Rapid/Shallow breathing (call ambulance)", value:"ambulance"}]}
   ],
   calc_score: (sec,values) => sum_scores(to_scores(values, sec.items)),
   message: (score,scores) => {
-    if (score <= 5) {return "Follow up in case of deterioration.";}
+    if (score <= 5) {return {priority:priorities.yellow, text: "Follow up in case of deterioration."};}
     if (score <= 7) {
-        return "Arrange an office visit the same day if Social Circumstances >4 Otherwise Follow up in 6-8h (" +scores['clinical'] + ")"; // XXX
+        return {
+            priority:priorities.brown,
+            text: "Arrange an office visit the same day if Social Circumstances >4 Otherwise Follow up in 6-8h (" +scores['clinical'] + ")"}; // XXX
     }
-    if (score >= 8) {return red_text("Emergency Room Referral");}
-    return (<i>Select all the options.</i>);
+    if (score >= 8) {return {priority:priorities.red, text: red_text("Emergency Room Referral")};}
+    return {priority: priorities.none, text: (<i>Select all the options.</i>)};
   }
 },
 {
   title: "Pysical signs",
   id: "physical",
   items: [
-      {id:"breathing_pattern", label:"Breathing pattern", opts:[
-          {label:"Normal",value:"0"},
-          {label:"Shallow breathing (call ambulance)", value:"ambulance"}]},
-    {id: "oxymeter", label: "Pulse oxymeter", opts:["> 97%", "94% - 97%", "90% - 94%", {label:"< 90% (Call ambulance)", value:"ambulance"}]},
-    {id: "resp_rate", label: "Respiratory rate while afebrile and resting", field:<Field name="resp_rate" component="input" type="number"/>}
+    {id: "resp_rate", label: "Respiratory rate while afebrile and resting", field:<Field name="resp_rate" component="input" type="number"/>},
+    {id: "oxymeter", label: "Pulse oxymeter", opts:["> 97%", "94% - 97%", "90% - 94%", {label:"< 90% (Call ambulance)", value:"ambulance"}]}
   ],
   calc_score: physScore,
   message: (score,scores) => {
-      if (score <= 2) {return "Follow up the next day";}
-      if (score == 3) {return "Arrange visit the same day";}
-      if (score >= 4) {return red_text("Emergency room referral.");}
-      return (<i>Select all the options and date of birth.</i>);
+      if (score <= 2) {return {priority: priorities.yellow,text: "Follow up the next day"};}
+      if (score == 3) {return {priority: priorities.brown,text: "Arrange visit the same day"};}
+      if (score >= 4) {return {priority: priorities.red,text: red_text("Emergency room referral.")};}
+      return {priority: priorities.none,text: (<i>Select all the options and date of birth.</i>)};
   },
 },
 {
@@ -201,27 +215,61 @@ const sections = [{
   ],
   calc_score: (sec,values) => sum_scores(to_scores(values, sec.items)),
   message: (score,scores) => {
-      if (score <= 3) { return "No action" }
-      if (score >= 3) {return "See observation of clinical signs"}
-      return (<i>Select all the options.</i>);
+      if (score <= 3) { return {priority: priorities.blue,text: "No action"} }
+      if (score >= 3) {return {priority: priorities.brown,text: "See observation of clinical signs"}}
+      return {priority: priorities.none,text: (<i>Select all the options.</i>)};
   }
 }];
 
-const mkTableRow = (sec,values,scores) => {
-    var msg;
-    if (scores[sec.id].ambulance) {
-        msg = red_text("Call ambulance");
-    } else if (scores[sec.id].emergency) {
-        msg = red_text("Emergency room referal");
+const messageOf = (section, values, scoreObj) => {
+    if (scoreObj.ambulance) {
+        return {priority: priorities.top,text: red_text("Call ambulance")};
+    } else if (scoreObj.emergency) {
+        return {priority: priorities.top, text: red_text("Emergency room referal")};
     } else {
-        msg = sec.message(scores[sec.id].score,values);
+        return section.message(scoreObj.score,values);
     }
+}
+
+// Find the final message from the sections.
+const finalMessage = (sections,values,scores) => {
+    if (sections.length === 0) {
+        throw "not enough sections.";
+    }
+    var fstSection = sections[0];
+    var bestMsg = messageOf(fstSection, values, scores[fstSection.id]);
+    console.assert(typeof bestMsg.priority === 'number', bestMsg);
+    sections.forEach((sec) => {
+        var tmpMsg = messageOf(sec,values,scores[sec.id]);
+        if (bestMsg.priority < tmpMsg.priority) {
+            bestMsg = tmpMsg;
+        }
+    });
+
+    // If the best message is none return a special message
+    if (bestMsg.priority === priorities.none) {
+        return {priority: priorities.none, text: (<i>Nothing to do, fill in section '{sections[0].title}'</i>) };
+    }
+    return bestMsg;
+}
+
+const mkTableRow = (section,values,scoreObj) => {
+    var msg = messageOf(section, values, scoreObj);
+    // if (scores[sec.id].ambulance) {
+    //     msg = {text: red_text("Call ambulance")};
+    // } else if (scores[sec.id].emergency) {
+    //     msg = {text: red_text("Emergency room referal")};
+    // } else {
+    //     msg = sec.message(scores[sec.id].score,values);
+    // }
     return (
         <tr>
-            <td>{sec.title}</td>
-            <td>{msg}</td>
-            <td>{scores[sec.id].score}</td>
+            <td>{section.title}</td>
+            <td>{msg.text}</td>
+            <td>{scoreObj.score}</td>
         </tr>);}
+
+
 const calcScores = (sections,values) => {
     var ret = {};
     sections.forEach((sec) => {
@@ -238,6 +286,10 @@ function fmtDate(date) {
 }
 
 const savePdf = values => {
+    if (!(values["firstName"] && values["lastName"] && values["birthDate"])) {
+        alert("Fill in full name and date of birth to generate a pdf.");
+        return;
+    }
     const doc = new jsPDF();
     doc.autoTable({ body : [
         ["Name", values["firstName"] + " " + values["lastName"]],
@@ -245,12 +297,17 @@ const savePdf = values => {
         ["Date generated", fmtDate(new Date())],
         ]})
     doc.autoTable({ theme: 'grid', html: '#results_table' })
+    doc.autoTable({ body: [["What to do", document.getElementById('final_message').innerText ]] })
     doc.save(
         values['firstName'] + '-' + values['lastName'] + '-' + fmtDate(new Date()) + '.pdf')
 }
 const isInValid = s => (isNaN(s.score) && !s.ambulance && !s.emergency);
 const PdfButton = props => {
-    var enable = !Object.values(props.scores).some(isInValid);
+    // Uncomment if you want to be able to print if EVERYTHING is completed.
+    // var enable = !Object.values(props.scores).some(isInValid);
+
+    // Print at any time.
+    var enable = true;
     const values = props.values;
     if (enable) {
         return (<Button variant="primary" disabled={false} onClick={() => savePdf(values)} >
@@ -276,8 +333,12 @@ const mkTable = (values) => {
             <Card.Body>
                 <table class="table" id="results_table">
                     <tr><th>Section</th><th>Action</th><th>Score</th></tr>
-                    {sections.map((sec) => mkTableRow(sec,values,scores))}
+                    {sections.map((sec) => mkTableRow(sec,values,scores[sec.id]))}
                 </table>
+                <Card>
+                    <Card.Header><b>Final decision</b></Card.Header>
+                    <Card.Body id="final_message">{finalMessage(sections,values,scores).text}</Card.Body>
+                </Card>
                 <PdfButton values={values} scores={scores} />
             </Card.Body>
         </Card>);
