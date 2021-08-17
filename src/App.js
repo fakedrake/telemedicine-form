@@ -335,7 +335,7 @@ const mkTable = (values) => {
                     <tr><th>Section</th><th>Action</th><th>Score</th></tr>
                     {sections.map((sec) => mkTableRow(sec,values,scores[sec.id]))}
                 </table>
-                <Card>
+                <Card class="text-white bg-primary mb-3">
                     <Card.Header><b>Final decision</b></Card.Header>
                     <Card.Body id="final_message">{finalMessage(sections,values,scores).text}</Card.Body>
                 </Card>
