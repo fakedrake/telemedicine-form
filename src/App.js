@@ -78,7 +78,7 @@ const to_scores = (m,ids) => ids.map((i) => {
 const age_opts = [
     {label: "2 - 12 months", value: "infant"},
     {label:"1 - 3 years", value:"toddler"},
-    {label:"3 - 6 years", value:"prescool"},
+    {label:"3 - 6 years", value:"preschool"},
     {label:"6 - 12 years", value:"school"},
     {label:"12 - 18 years", value:"teen"}]
 
@@ -138,7 +138,8 @@ const priorities = {
     yellow: 2,
     brown: 3,
     red: 4,
-    top: 5
+    top: 5,
+    fill: 0.5
 }
 
 const sections = [{
@@ -157,7 +158,7 @@ const sections = [{
   message: (score) => {
     if (score <= 7) {return {priority: priorities.blue, text: "Follow up if deterioration"};}
     if (score <= 10) {return {priority: priorities.yellow, text: "Follow up next day"};}
-    if (score > 10) {return {priority: priorities.brown, text: "Fill in section '".concat(sections[1].title, "'.")  };}
+    if (score > 10) {return {priority: priorities.fill, text: "Emergency Room Referral or fill in section '".concat(sections[1].title, "'.")  };}
     return {priority: priorities.none, text: (<i>Select all the options.</i>)};
   }
 },
@@ -174,7 +175,7 @@ const sections = [{
     {id: "resp_effort", label: "Respiratory effort", opts: ["No accessory muscles", "1 accessory muscle", "\u2265 2 accessory muscles"]},
     {id: "lay_down", label: "Ability to lay down", opts: ["Comfortable when lying down", "Unomfortable when lying down", "Mostly seating"]},
     {id: "speak", label: "Ability to speak", opts: ["In full sentences / babbles", "Only phrases / short cries", "Only words / grunting"]},
-    {id: "feed", label: "Ability to feed", opts: ["As usual decreased", "Decreased", "Severely reduced"]},
+    {id: "feed", label: "Ability to feed", opts: ["As usual", "Decreased", "Severely reduced"]},
     {id:"breathing_pattern", label:"Breathing pattern", opts:[
         {label:"Normal",value:"0"},
         {label:"Rapid/Shallow breathing (call ambulance)", value:"ambulance"}]}
@@ -192,7 +193,7 @@ const sections = [{
   }
 },
 {
-  title: "Pysical signs",
+  title: "Physical signs",
   id: "physical",
   items: [
     {id: "resp_rate", label: "Respiratory rate while afebrile and resting", field:<Field name="resp_rate" component="input" type="number"/>},
@@ -202,7 +203,7 @@ const sections = [{
   message: (score,scores) => {
       if (score <= 2) {return {priority: priorities.yellow,text: "Follow up the next day"};}
       if (score == 3) {return {priority: priorities.brown,text: "Arrange visit the same day"};}
-      if (score >= 4) {return {priority: priorities.red,text: red_text("Emergency room referral.")};}
+      if (score >= 4) {return {priority: priorities.red,text: red_text("Emergency room referral")};}
       return {priority: priorities.none,text: (<i>Select all the options and date of birth.</i>)};
   },
 },
@@ -225,7 +226,7 @@ const messageOf = (section, values, scoreObj) => {
     if (scoreObj.ambulance) {
         return {priority: priorities.top,text: red_text("Call ambulance")};
     } else if (scoreObj.emergency) {
-        return {priority: priorities.top, text: red_text("Emergency room referal")};
+        return {priority: priorities.top, text: red_text("Emergency room referral")}
     } else {
         return section.message(scoreObj.score,values);
     }
@@ -258,7 +259,7 @@ const mkTableRow = (section,values,scoreObj) => {
     // if (scores[sec.id].ambulance) {
     //     msg = {text: red_text("Call ambulance")};
     // } else if (scores[sec.id].emergency) {
-    //     msg = {text: red_text("Emergency room referal")};
+    //     msg = {text: red_text("Emergency room referral")};
     // } else {
     //     msg = sec.message(scores[sec.id].score,values);
     // }
@@ -327,6 +328,14 @@ const PdfButton = props => {
 
 const mkTable = (values) => {
     var  scores = calcScores(sections,values);
+    var finalMsg = finalMessage(sections,values,scores)
+    if (finalMsg.priority >= priorities.red) {
+        var cardTheme = "bg-warning"
+    } else if (finalMsg.priority > priorities.yellow || finalMsg.priority == priorities.fill) {
+        var cardTheme = "bg-secondary"
+    } else {
+        var cardTheme = "bg-success"
+    }
     return (
         <Card>
             <Card.Header><b>Results</b></Card.Header>
@@ -337,7 +346,9 @@ const mkTable = (values) => {
                 </table>
                 <Card>
                     <Card.Header><b>Final decision</b></Card.Header>
-                    <Card.Body id="final_message">{finalMessage(sections,values,scores).text}</Card.Body>
+                    <div class={cardTheme}>
+                        <Card.Body id="final_message">{finalMsg.text}</Card.Body>
+                    </div>
                 </Card>
                 <PdfButton values={values} scores={scores} />
             </Card.Body>
@@ -384,11 +395,11 @@ const App = () => (
     <Card>
         <Card.Header><b>Usage</b></Card.Header>
         <Card.Body>
-            This form stores <b>no information anywhere</b> so you patients' information is
+            This form stores <b>no information anywhere</b> so your patients' information is
             safe.
             Filling in the form will
             update the table at the bottom of the page automatically. Once the form
-            is filled in it's entirety, you may download the table in pdf form by clicking
+            is filled in its entirety, you may download the table in pdf form by clicking
             the button at the end of the page. If the button does not seem to work it may
             be because your browser is blocking the download. If this happens check the
             URL bar of your browser for such indications and disable the setting by
