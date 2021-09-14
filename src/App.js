@@ -33,7 +33,7 @@ const DatePickerWrapper = props =>
            onChange={val => props.input.onChange(val)}
            />);
 
-const optStyle = (value) =>{ return {color: "red"}; }
+const optStyle = (value) =>{ return {}; }
 
 const mkInpt = (props) =>{
     if (props.opts !== undefined) {
