@@ -31,7 +31,9 @@ const DatePickerWrapper = props =>
            dropdownMonde="select"
            selected={props.input.value}
            onChange={val => props.input.onChange(val)}
-           />)
+           />);
+
+const optStyle = (value) =>{ return {color: "red"}; }
 
 const mkInpt = (props) =>{
     if (props.opts !== undefined) {
@@ -41,7 +43,7 @@ const mkInpt = (props) =>{
                         {if (typeof(opt) == "string") {
                             return (<option value={i + 1}>{opt}</option>);
                          } else {
-                             return (<option value={opt.value}>{opt.label}</option>)
+                             return (<option style={optStyle(opt.value)} value={opt.value}>{opt.label}</option>)
                          }})}
                 </Field>);
     } else {
@@ -167,18 +169,18 @@ const sections = [{
   id: "clinical",
   items: [
     {id: "mental", label: "Mental status",
-     opts: ["Normal", "Moderate crying / Agitated", "Severe irritability",
-            {label:"Lethargy (emergency room referral)",value:"emergency"},
-            {label:"Unresponsive (call ambulance)",value:"ambulance"}]},
+     opts: ["Normal", "Moderate crying / Agitated", "Irritability",
+            {label:"Lethargy - emergency room referral",value:"emergency"},
+            {label:"Unresponsive - call ambulance",value:"ambulance"}]},
     {id: "skin_color", label: "Skin color", opts: [{label:"Normal",value:"0"},
-                                                   {label:"Motted / grey (call ambulance)", value:"ambulance"}]},
+                                                   {label:"Motted / grey - call ambulance", value:"ambulance"}]},
     {id: "resp_effort", label: "Respiratory effort", opts: ["No accessory muscles", "1 accessory muscle", "\u2265 2 accessory muscles"]},
     {id: "lay_down", label: "Ability to lay down", opts: ["Comfortable when lying down", "Unomfortable when lying down", "Mostly seating"]},
     {id: "speak", label: "Ability to speak", opts: ["In full sentences / babbles", "Only phrases / short cries", "Only words / grunting"]},
     {id: "feed", label: "Ability to feed", opts: ["As usual", "Decreased", "Severely reduced"]},
     {id:"breathing_pattern", label:"Breathing pattern", opts:[
         {label:"Normal",value:"0"},
-        {label:"Rapid/Shallow breathing (call ambulance)", value:"ambulance"}]}
+        {label:"Rapid/Shallow breathing - call ambulance", value:"ambulance"}]}
   ],
   calc_score: (sec,values) => sum_scores(to_scores(values, sec.items)),
   message: (score,scores) => {
