@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/telemedicine-form/static/css/main.6dea0f05.chunk.css",
-    "main.js": "/telemedicine-form/static/js/main.9ceeccdd.chunk.js",
-    "main.js.map": "/telemedicine-form/static/js/main.9ceeccdd.chunk.js.map",
+    "main.js": "/telemedicine-form/static/js/main.dae41b85.chunk.js",
+    "main.js.map": "/telemedicine-form/static/js/main.dae41b85.chunk.js.map",
     "runtime-main.js": "/telemedicine-form/static/js/runtime-main.7bec0b15.js",
     "runtime-main.js.map": "/telemedicine-form/static/js/runtime-main.7bec0b15.js.map",
     "static/js/2.07df4524.chunk.js": "/telemedicine-form/static/js/2.07df4524.chunk.js",
     "static/js/2.07df4524.chunk.js.map": "/telemedicine-form/static/js/2.07df4524.chunk.js.map",
-    "static/css/3.49b28889.chunk.css": "/telemedicine-form/static/css/3.49b28889.chunk.css",
-    "static/js/3.77384b29.chunk.js": "/telemedicine-form/static/js/3.77384b29.chunk.js",
-    "static/js/3.77384b29.chunk.js.map": "/telemedicine-form/static/js/3.77384b29.chunk.js.map",
+    "static/css/3.9c6b934b.chunk.css": "/telemedicine-form/static/css/3.9c6b934b.chunk.css",
+    "static/js/3.3c97e8f3.chunk.js": "/telemedicine-form/static/js/3.3c97e8f3.chunk.js",
+    "static/js/3.3c97e8f3.chunk.js.map": "/telemedicine-form/static/js/3.3c97e8f3.chunk.js.map",
     "static/js/4.e189cc7e.chunk.js": "/telemedicine-form/static/js/4.e189cc7e.chunk.js",
     "static/js/4.e189cc7e.chunk.js.map": "/telemedicine-form/static/js/4.e189cc7e.chunk.js.map",
     "static/js/5.8855c39a.chunk.js": "/telemedicine-form/static/js/5.8855c39a.chunk.js",
@@ -17,18 +17,18 @@
     "static/js/6.b97faec4.chunk.js": "/telemedicine-form/static/js/6.b97faec4.chunk.js",
     "static/js/6.b97faec4.chunk.js.map": "/telemedicine-form/static/js/6.b97faec4.chunk.js.map",
     "index.html": "/telemedicine-form/index.html",
-    "static/css/3.49b28889.chunk.css.map": "/telemedicine-form/static/css/3.49b28889.chunk.css.map",
+    "static/css/3.9c6b934b.chunk.css.map": "/telemedicine-form/static/css/3.9c6b934b.chunk.css.map",
     "static/css/main.6dea0f05.chunk.css.map": "/telemedicine-form/static/css/main.6dea0f05.chunk.css.map",
     "static/js/2.07df4524.chunk.js.LICENSE.txt": "/telemedicine-form/static/js/2.07df4524.chunk.js.LICENSE.txt",
-    "static/js/3.77384b29.chunk.js.LICENSE.txt": "/telemedicine-form/static/js/3.77384b29.chunk.js.LICENSE.txt",
+    "static/js/3.3c97e8f3.chunk.js.LICENSE.txt": "/telemedicine-form/static/js/3.3c97e8f3.chunk.js.LICENSE.txt",
     "static/js/4.e189cc7e.chunk.js.LICENSE.txt": "/telemedicine-form/static/js/4.e189cc7e.chunk.js.LICENSE.txt",
     "static/js/5.8855c39a.chunk.js.LICENSE.txt": "/telemedicine-form/static/js/5.8855c39a.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.7bec0b15.js",
-    "static/css/3.49b28889.chunk.css",
-    "static/js/3.77384b29.chunk.js",
+    "static/css/3.9c6b934b.chunk.css",
+    "static/js/3.3c97e8f3.chunk.js",
     "static/css/main.6dea0f05.chunk.css",
-    "static/js/main.9ceeccdd.chunk.js"
+    "static/js/main.dae41b85.chunk.js"
   ]
 }
