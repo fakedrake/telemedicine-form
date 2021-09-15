@@ -169,7 +169,8 @@ const sections = [{
   id: "clinical",
   items: [
     {id: "mental", label: "Mental status",
-     opts: ["Normal", "Moderate crying / Agitated", "Irritability",
+     opts: ["Normal", "Moderate crying / Agitated",
+            {label: "Severe Irritability", value: "emergency"},
             {label:"Lethargy - emergency room referral",value:"emergency"},
             {label:"Unresponsive - call ambulance",value:"ambulance"}]},
     {id: "skin_color", label: "Skin color", opts: [{label:"Normal",value:"0"},
@@ -180,7 +181,8 @@ const sections = [{
     {id: "feed", label: "Ability to feed", opts: ["As usual", "Decreased", "Severely reduced"]},
     {id:"breathing_pattern", label:"Breathing pattern", opts:[
         {label:"Normal",value:"0"},
-        {label:"Rapid/Shallow breathing - call ambulance", value:"ambulance"}]}
+        {label:"Rapid/Shallow breathing - call ambulance", value:"ambulance"},
+        {label:"Grunting", value:"emergency"}]}
   ],
   calc_score: (sec,values) => sum_scores(to_scores(values, sec.items)),
   message: (score,scores) => {
